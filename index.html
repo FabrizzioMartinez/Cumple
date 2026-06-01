@@ -249,37 +249,44 @@ const partes=fecha.split("-");
 const fechaFormateada=`${partes[2]}/${partes[1]}/${partes[0]}`;
 
 emailjs.send(
-    "service_04pvjk6",
-    "template_e1bbk0q",
-    {
-        fecha: fechaFormateada,
-        hora: hora
-    }
+"service_04pvjk6",
+"template_e1bbk0q",
+{
+fecha: fechaFormateada,
+hora: hora
+}
 )
 .then(()=>{
 
+```
 agenda.classList.add("hidden");
 final.classList.remove("hidden");
 
 lanzarConfeti();
 
-const qr=`Beneficio aprobado | ${fechaFormateada} ${hora}`;
+const qr =
+"https://fabrizziomartinez.github.io/Cumple/validar.html";
 
-document.getElementById("qrcode-container").innerHTML=
-`<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(qr)}">`;
+document.getElementById("qrcode-container").innerHTML =
+`<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(qr)}" alt="QR Voucher">`;
 
 detalle.innerHTML=`
 <b>Fecha:</b> ${fechaFormateada}<br>
 <b>Hora:</b> ${hora}<br><br>
-Estado: <span style="color:green"><b>APROBADO</b></span>
+Estado: <span style="color:green"><b>APROBADO ✅</b></span>
+<br><br>
+📱 Escanea el QR para reclamar tu beneficio.
 `;
+```
 
 })
 .catch(error=>{
 console.error(error);
 alert("Error EmailJS: " + error.text);
 });
+
 }
+
 </script>
 </body>
 </html>
