@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SGB-CUMPLE v2.0</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+*{box-sizing:border-box}
+body{
+margin:0;
+font-family:'Segoe UI',sans-serif;
+background:linear-gradient(135deg,#ffe1ec,#ffd7f7,#ffeecf);
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:20px;
+}
+.card{
+background:white;
+width:100%;
+max-width:560px;
+padding:28px;
+border-radius:24px;
+box-shadow:0 15px 40px rgba(0,0,0,.12);
+text-align:center;
+animation:fade .4s ease;
+}
+@keyframes fade{
+from{opacity:0;transform:translateY(10px)}
+to{opacity:1;transform:translateY(0)}
+}
+.hidden{display:none}
+h1,h2{margin-top:0;color:#d63384}
+.progress{
+height:10px;background:#eee;border-radius:999px;margin-bottom:20px;overflow:hidden
+}
+.progress-bar{
+height:100%;width:0;background:#d63384;transition:.4s
+}
+input,button{
+width:100%;
+padding:14px;
+margin:8px 0;
+border-radius:12px;
+font-size:16px;
+}
+input{
+border:2px solid #f0c0db;
+}
+button{
+background:#d63384;
+color:#fff;
+border:none;
+cursor:pointer;
+font-weight:bold;
+}
+button:hover{opacity:.95}
+.option-btn{
+background:#fafafa;
+color:#333;
+border:2px solid #eee;
+}
+.error{
+background:#fff1f5;
+color:#d63384;
+padding:10px;
+border-radius:10px;
+margin-top:10px;
+font-weight:bold;
+}
+.ticket{
+background:#fff7fb;
+border:2px dashed #d63384;
+padding:18px;
+border-radius:16px;
+margin-top:15px;
+}
+#confetti{
+position:fixed;
+inset:0;
+pointer-events:none;
+overflow:hidden;
+}
+.conf{
+position:absolute;
+font-size:24px;
+animation:fall 3s linear forwards;
+}
+@keyframes fall{
+from{transform:translateY(-100px)}
+to{transform:translateY(110vh)}
+}
+img{max-width:220px}
+</style>
+</head>
+<body>
+
+<div id="confetti"></div>
+
+<div class="card" id="login">
+<h1>🔐 SGB-CUMPLE v2.0</h1>
+<p>Sistema de Gestión de Beneficios de Cumpleaños</p>
+<input id="pass" placeholder="Contraseña secreta">
+<div id="loginError" class="error hidden">Pista: es una palabra que me dices 😆</div>
+<button onclick="login()">Ingresar</button>
+</div>
+
+<div class="card hidden" id="quiz">
+<div class="progress"><div id="bar" class="progress-bar"></div></div>
+<h2 id="titulo"></h2>
+<p id="pregunta"></p>
+<div id="opciones"></div>
+<div id="quizError" class="error hidden"></div>
+</div>
+
+<div class="card hidden" id="agenda">
+<h2>📅 Programación del Beneficio</h2>
+<p>Selecciona cuándo deseas canjear tu cupón de cumpleaños.</p>
+<input type="date" id="fecha">
+<input type="time" id="hora">
+<button onclick="confirmar()">🎟️ Generar Voucher</button>
+</div>
+
+<div class="card hidden" id="final">
+<h2>🎉 BENEFICIO APROBADO 🎉</h2>
+<p>Has superado exitosamente todas las validaciones del sistema.</p>
+<div id="qrcode-container"></div>
+<div class="ticket">
+<h3>🎟️ Voucher Oficial</h3>
+<p id="detalle"></p>
+<p>
+✔ Comida incluida<br>
+✔ Conversación incluida<br>
+✔ Quejas limitadas a 3 por hora<br>
+✔ Exclusivo para la cumpleañera
+</p>
+</div>
+</div>
+
+<script>
+emailjs.init({publicKey:"7N6K_l_2OBDhPXCYv"});
+
+const preguntas=[
+{
+q:"¿Quién suele tener la razón?",
+o:["Fabrizzio","Yo","Depende del día"],
+c:0
+},
+{
+q:"¿Qué tan dramática eres?",
+o:["Nada","Un poquito","Lo suficiente para hacer memes"],
+c:2
+},
+{
+q:"¿Aceptas recibir un beneficio de cumpleaños?",
+o:["Sí","Obviamente sí"],
+c:1
+}
+];
+
+const mensajes=[
+"⚠️ El sistema detectó una mentira.",
+"⚠️ Respuesta rechazada por control de calidad.",
+"⚠️ Inténtalo otra vez 😆",
+"⚠️ Error 404: verdad no encontrada."
+];
+
+let actual=0;
+
+function login(){
+if(pass.value.trim().toLowerCase()==="dramatico"){
+loginDiv=document.getElementById("login");
+loginDiv.classList.add("hidden");
+quiz.classList.remove("hidden");
+cargar();
+}else{
+loginError.classList.remove("hidden");
+}
+}
+
+document.getElementById("pass").addEventListener("keypress",e=>{
+if(e.key==="Enter") login();
+});
+
+function cargar(){
+const p=preguntas[actual];
+titulo.innerText=`Pregunta ${actual+1} de ${preguntas.length}`;
+pregunta.innerText=p.q;
+
+bar.style.width=((actual)/preguntas.length)*100+"%";
+
+opciones.innerHTML="";
+
+p.o.forEach((txt,i)=>{
+const b=document.createElement("button");
+b.className="option-btn";
+b.innerText=txt;
+b.onclick=()=>responder(i);
+opciones.appendChild(b);
+});
+}
+
+function responder(i){
+const err=document.getElementById("quizError");
+
+if(i===preguntas[actual].c){
+err.classList.add("hidden");
+actual++;
+
+if(actual<preguntas.length){
+cargar();
+}else{
+bar.style.width="100%";
+quiz.classList.add("hidden");
+agenda.classList.remove("hidden");
+}
+}else{
+err.innerText=mensajes[Math.floor(Math.random()*mensajes.length)];
+err.classList.remove("hidden");
+setTimeout(()=>err.classList.add("hidden"),1500);
+}
+}
+
+function lanzarConfeti(){
+const emojis=["🎉","🎊","🎈","🎁","🎂"];
+for(let i=0;i<50;i++){
+const e=document.createElement("div");
+e.className="conf";
+e.innerText=emojis[Math.floor(Math.random()*emojis.length)];
+e.style.left=Math.random()*100+"vw";
+e.style.animationDelay=Math.random()+"s";
+document.getElementById("confetti").appendChild(e);
+}
+}
+
+function confirmar(){
+
+const fecha=document.getElementById("fecha").value;
+const hora=document.getElementById("hora").value;
+
+if(!fecha || !hora){
+alert("Selecciona fecha y hora");
+return;
+}
+
+const partes=fecha.split("-");
+const fechaFormateada=`${partes[2]}/${partes[1]}/${partes[0]}`;
+
+emailjs.send(
+    "service_04pvjk6",
+    "template_e1bbk0q",
+    {
+        fecha: fechaFormateada,
+        hora: hora
+    }
+)
+.then(()=>{
+
+agenda.classList.add("hidden");
+final.classList.remove("hidden");
+
+lanzarConfeti();
+
+const qr=`Beneficio aprobado | ${fechaFormateada} ${hora}`;
+
+document.getElementById("qrcode-container").innerHTML=
+`<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(qr)}">`;
+
+detalle.innerHTML=`
+<b>Fecha:</b> ${fechaFormateada}<br>
+<b>Hora:</b> ${hora}<br><br>
+Estado: <span style="color:green"><b>APROBADO</b></span>
+`;
+
+})
+.catch(error=>{
+console.error(error);
+alert("Error EmailJS: " + error.text);
+});
+}
+</script>
+</body>
+</html>

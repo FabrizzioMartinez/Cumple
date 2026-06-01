@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Validación de Voucher</title>
+
+<style>
+body{
+    font-family:Segoe UI,sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    background:#ffe6f0;
+    margin:0;
+}
+
+.card{
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    width:90%;
+    max-width:400px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.1);
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin:15px 0;
+    border-radius:10px;
+    border:1px solid #ccc;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:#d63384;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.hidden{
+    display:none;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+
+    <div id="login">
+        <h2>🔒 Voucher Protegido</h2>
+
+        <p>Ingresa la contraseña para reclamar el regalo.</p>
+
+        <input
+            type="password"
+            id="password"
+            placeholder="Contraseña">
+
+        <button onclick="validar()">
+            Validar
+        </button>
+
+        <p id="error" class="hidden">
+            ❌ Contraseña incorrecta
+        </p>
+    </div>
+
+    <div id="contenido" class="hidden">
+
+        <h2>🎉 Voucher Válido</h2>
+
+        <p>
+            Este ticket ha sido validado correctamente.
+        </p>
+
+        <h3>🎁 Regalo desbloqueado</h3>
+
+        <p>
+            Vale por una comida, conversación
+            y una sorpresa adicional.
+        </p>
+
+    </div>
+
+</div>
+
+<script>
+
+function validar(){
+
+    const pass =
+        document.getElementById("password").value;
+
+    if(pass === "260801"){
+
+        document
+            .getElementById("login")
+            .classList.add("hidden");
+
+        document
+            .getElementById("contenido")
+            .classList.remove("hidden");
+
+    }else{
+
+        document
+            .getElementById("error")
+            .classList.remove("hidden");
+
+    }
+}
+
+document
+.getElementById("password")
+.addEventListener("keypress", e => {
+
+    if(e.key === "Enter"){
+        validar();
+    }
+
+});
+</script>
+
+</body>
+</html>
