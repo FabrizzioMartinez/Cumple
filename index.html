@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Formulario de Prueba</title>
-<script src="[https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js](https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js)"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<link rel="icon" href="data:,">
 <style>
 *{box-sizing:border-box}
 body{
@@ -261,7 +262,8 @@ final.classList.remove("hidden");
 
 lanzarConfeti();
 
-const qr = "[https://fabrizziomartinez.github.io/Cumple/validar.html](https://fabrizziomartinez.github.io/Cumple/validar.html)";
+// CORREGIDO: Se limpió la URL de validación removiendo el formato Markdown
+const qr = "https://fabrizziomartinez.github.io/Cumple/validar.html";
 
 document.getElementById("qrcode-container").innerHTML =
 `<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(qr)}" alt="QR Voucher">`;
