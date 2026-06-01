@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Formulario de Prueba</title>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="[https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js](https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js)"></script>
 <style>
 *{box-sizing:border-box}
 body{
@@ -101,7 +101,7 @@ img{max-width:220px}
 
 <div class="card" id="login">
 <h1>🔐 Juega y Gana</h1>
-<p>Gana Premios Respondiendo Solo la Verdad y nada mas que la verdad</p>
+<p>Gana Premios Respondiendo Solo la Verdad</p>
 <input id="pass" placeholder="Contraseña secreta">
 <div id="loginError" class="error hidden">Pista: es una palabra que me dices 😆</div>
 <button onclick="login()">Ingresar</button>
@@ -236,7 +236,6 @@ document.getElementById("confetti").appendChild(e);
 }
 
 function confirmar(){
-
 const fecha=document.getElementById("fecha").value;
 const hora=document.getElementById("hora").value;
 
@@ -257,15 +256,12 @@ hora: hora
 }
 )
 .then(()=>{
-
-```
 agenda.classList.add("hidden");
 final.classList.remove("hidden");
 
 lanzarConfeti();
 
-const qr =
-"https://fabrizziomartinez.github.io/Cumple/validar.html";
+const qr = "[https://fabrizziomartinez.github.io/Cumple/validar.html](https://fabrizziomartinez.github.io/Cumple/validar.html)";
 
 document.getElementById("qrcode-container").innerHTML =
 `<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(qr)}" alt="QR Voucher">`;
@@ -277,16 +273,12 @@ Estado: <span style="color:green"><b>APROBADO ✅</b></span>
 <br><br>
 📱 Escanea el QR para reclamar tu beneficio.
 `;
-```
-
 })
 .catch(error=>{
 console.error(error);
 alert("Error EmailJS: " + error.text);
 });
-
 }
-
 </script>
 </body>
 </html>
